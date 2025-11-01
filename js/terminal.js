@@ -37,12 +37,12 @@ const COMMANDS = {
         }
     },
     google(args) {
-        const search = args;
+        const search = args.join(' ');
         let googleSearchURL = `https://www.google.com/search?q=${search}`;
         window.open(googleSearchURL, '_blank');
     },
     duckduckgo(args) {
-        const search = args;
+        const search = args.join(' ');
         let duckSearchURL = `https://www.duckduckgo.com/search?q=${search}`;
         window.open(duckSearchURL, '_blank');
     },
@@ -95,7 +95,6 @@ document.addEventListener('keydown', (e) => {
         // Adds every inputed character to the terminal
         userText.textContent += e.key;
     } else if (e.key === 'Enter') {
-        // Calls the new line function, and checks if the user has typed a command 
         currentLine.cursor.remove();
         runCmd(userText.textContent);
         newLine();
@@ -179,7 +178,7 @@ function runCmd(cmd) {
             }
         })
         if (!cmdIs) {
-            printf(`${browser}: command not found: ${parts}`);
+            printf(`${browser}: command not found: ${parts}`, 'error');
             return;
         }
 

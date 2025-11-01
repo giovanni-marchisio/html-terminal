@@ -59,7 +59,8 @@
 }
 
 
-#pos-info {
+.time {
+    padding: 15px;
     position: fixed;
     z-index: 2;
     color: #ffffff;
