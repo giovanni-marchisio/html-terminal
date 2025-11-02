@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,25 @@
     <script src="./js/script.js" defer></script>
     <script src="./js/terminal.js" defer></script>
 </head>
+
 <body>
     <span class="time"></span>
     <main class="container">
         <div class="terminal" id="terminal-1">
-            <div class="screen" id="screen"> 
+            <div class="screen" id="screen">
             </div>
         </div>
+        <span class="config-icon">
+            <img src="./img/settings_24dp_FFFFFF.svg" alt="">
+        </span>
+        <span class="config" data-role="opt-menu">
+            <section>
+                <input type="color" id="background-color-wheel" name="background-color-wheel" value="1A1A1A8A"
+                    colorspace="display-p3" alpha />
+                <label for="background-color-wheel">Background color</label>
+            </section>
+        </span>
     </main>
 </body>
+
 </html>

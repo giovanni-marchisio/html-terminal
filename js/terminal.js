@@ -14,6 +14,8 @@ const COMMANDS = {
             usermod: Changes the current user's name\n
             google: Searches the web using google\n
             duckduckgo: Searches the web using duckduckgo\n
+            date: Show the current time\n
+            changebg: Changes the background color\n
             exit: Closes the terminal\n
             \n\n`);
     },
@@ -38,30 +40,38 @@ const COMMANDS = {
     },
     google(args) {
         const search = args.join(' ');
+        if (search == "") {
+            printf('\nUsage: google <search> \n\n', 'error');
+            return;
+        }
         let googleSearchURL = `https://www.google.com/search?q=${search}`;
         window.open(googleSearchURL, '_blank');
     },
     duckduckgo(args) {
         const search = args.join(' ');
+        if (search == "") {
+            printf('\nUsage: duckduckgo <search> \n\n', 'error');
+            return;
+        }
         let duckSearchURL = `https://www.duckduckgo.com/search?q=${search}`;
         window.open(duckSearchURL, '_blank');
     },
-    whoami(){
+    whoami() {
         printf(username);
     },
-    neofetch(){
+    neofetch() {
 
         const line = document.createElement('div');
         const img = document.createElement('img');
         const text = document.createElement('span');
-        
+
         line.className = 'neofetch';
 
         img.src = `./img/puterpeng.gif`;
         img.width = 250;
 
-        text.innerHTML = 
-        `
+        text.innerHTML =
+            `
         OS: ${navigator.oscpu}\n <br>
         Host: ${browser}\n
 
@@ -70,23 +80,48 @@ const COMMANDS = {
         line.appendChild(text);
         screen.appendChild(line);
     },
+    date(args) {
+        if (args[0] == "+%T") {
+            printf(timeNow());
+            return;
+        }
+
+        if (args[0] == "+%R" || args[0] == "+%r" || args[0] == "+%t") {
+            printf(`date: ${args[0]} is not implemented yet!`, 'error');
+        } else {
+            printf('\nUsage: date +%T for 24-hour format HH:MM:SS \n\n', 'error');
+            return;
+        }
+    },
+    changebg(args) {
+        console.log(checkURL(args[0]), args[0]);
+        if (checkURL(args[0])) {
+            document.body.style.backgroundImage = `url(${args[0]})`;
+            document.body.style.backgroundSize = "cover";
+        } else if (args[0] == "remove") {
+            document.body.style.backgroundImage = `none`;
+        } else if (args[0][0] == "#") {
+            document.body.style.backgroundColor = args[0];
+            bgColorWheel.value = args[0];
+        } else {
+            printf('Usage: changebg <#color> || <image_link> || remove\n\n', 'error');
+        }
+
+    },
     exit() {
-        window.open('', '_self'); 
+        window.open('', '_self');
         window.close();
     }
 }
 
 
-whichBrowser();
-newLine();
-
 document.addEventListener('keydown', (e) => {
     if (!currentLine) {
         return;
     }
-    e.preventDefault();
-
     const userText = currentLine.text;
+
+
     if (e.key === 'Backspace') {
         // Deletes the last character from the terminal
         userText.textContent = userText.textContent.slice(0, -1);
@@ -105,24 +140,28 @@ document.addEventListener('keydown', (e) => {
         let fun = COMMANDS["clear"];
         fun();
         newLine();
-    } else if (e.key === 'ArrowUp'){
-        if (HISTORY.length == 0){
+    } else if (e.ctrlKey && e.key.toLowerCase() === 'v') {
+        e.preventDefault();
+        navigator.clipboard.readText()
+            .then((text) => (userText.textContent += text));
+        // Sadly you need to confirm for the content to be pasted properly
+    } else if (e.key === 'ArrowUp') {
+        if (HISTORY.length == 0) {
             return;
         }
-        historyPos = Math.max(0, historyPos-1);
+        historyPos = Math.max(0, historyPos - 1);
         userText.textContent = HISTORY[historyPos];
         e.preventDefault();
-    } else if (e.key === 'ArrowDown'){
-        if (HISTORY.length == 0){
+    } else if (e.key === 'ArrowDown') {
+        if (HISTORY.length == 0) {
             return;
         }
-        historyPos = Math.min(HISTORY.length, historyPos+1);
+        historyPos = Math.min(HISTORY.length, historyPos + 1);
         userText.textContent = HISTORY[historyPos];
         e.preventDefault();
     }
 
 })
-
 
 function newLine() {
     const line = document.createElement('div');
@@ -196,6 +235,8 @@ function runCmd(cmd) {
 
 }
 
+document.addEventListener("DOMContentLoaded", whichBrowser());
+
 function whichBrowser() {
     const u = navigator.userAgent;
 
@@ -210,3 +251,5 @@ function whichBrowser() {
     }
 
 }
+
+newLine();
